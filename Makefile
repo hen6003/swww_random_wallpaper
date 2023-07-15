@@ -2,10 +2,12 @@ CURRENTDIR = $(notdir $(CURDIR:/=))
 
 BUILDDIR = build
 
+OUTFILE = $(addprefix $(BUILDDIR)/, $(CURRENTDIR))
+
 SOURCES := $(wildcard *.scm)
 OBJECTS := $(addprefix $(BUILDDIR)/, $(SOURCES:%.scm=%.o))
 
-$(CURRENTDIR): $(OBJECTS)
+$(OUTFILE): $(OBJECTS)
 	csc $+ -o $@
 
 $(BUILDDIR)/%.o: %.scm $(BUILDDIR)
