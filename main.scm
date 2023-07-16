@@ -8,6 +8,11 @@
         (optimism))
 
 ;; Functions
+(define (send-notification wallpaper)
+  (process-run "notify-send" 
+               (list "-a" (program-name) "-u" "low" 
+                     "New wallpaper" wallpaper)))
+
 (define (random-wallpaper wallpapers)
   (list-ref wallpapers
             (pseudo-random-integer (length wallpapers))))
@@ -35,7 +40,7 @@
 
     (define new_files (if (directory? file)
       (directory-recurse file)
-      (list file)))
+      (list (cons (car files) file))))
 
     (if (not (eq? (cdr files) '()))
       (append new_files (check-list (cdr files)))
@@ -80,8 +85,10 @@
       (set! wallpapers (directory-recurse wallpaper_path))
 
       (set! new_wallpaper (random-wallpaper wallpapers))
-      (set-wallpaper new_wallpaper)
 
-      (print "Set wallpaper: " new_wallpaper)
+      (set-wallpaper (cdr new_wallpaper))
+
+      (print "Set wallpaper: " (cdr new_wallpaper))
+      (send-notification (car new_wallpaper))
 
       (process-sleep delay_time))))
